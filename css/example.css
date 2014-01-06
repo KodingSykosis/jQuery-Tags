@@ -1,0 +1,44 @@
+/*csslint box-sizing:false*/
+
+fieldset,
+.form-field input,
+.form-field select,
+.form-field label {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing:border-box;
+}
+
+fieldset {
+    width: 300px;
+    margin: 20px auto;
+    padding: 10px;
+    zoom: 1;
+    overflow:hidden;
+}
+
+.form-field {
+    width: 95%;
+    margin: 10px 0;
+}
+
+.form-field input,
+.form-field select,
+.form-field label {
+    width: 100%;
+    height: 30px;
+    display: inline-block;
+}
+
+.form-field input,
+.form-field select {
+    padding: 4px;
+}
+
+button {
+    float: right;
+}
+
+.error {
+    color: red;
+}

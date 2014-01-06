@@ -1,0 +1,7 @@
+/*csslint box-sizing:false*/
+
+.ui-tags-wrap {
+    border: 1px solid #ABADB3;
+    overflow: hidden;
+    margin: 0;
+}

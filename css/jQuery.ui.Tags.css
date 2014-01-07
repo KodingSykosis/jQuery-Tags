@@ -1,7 +1,34 @@
-/*csslint box-sizing:false*/
-
 .ui-tags-wrap {
     border: 1px solid #ABADB3;
     overflow: hidden;
     margin: 0;
+}
+
+.ui-tags {
+    box-sizing: border-box;
+    list-style: none;
+    margin: 0;
+    padding: 0.1em;
+    padding-bottom: 1em;
+}
+
+.ui-tags-item {
+    display: inline-block;
+    margin: 0.1em;
+    padding: 0.25em;
+    width: auto;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+.ui-tags-style-rounded {
+    border-radius: 3px;
+}
+
+.ui-tags-style-lightblue {
+    background: #D4E4F1;
+}
+
+.ui-tags-item-close {
+    display: inline-block;
 }

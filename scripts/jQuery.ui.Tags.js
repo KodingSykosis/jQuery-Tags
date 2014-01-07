@@ -51,7 +51,7 @@
             return -1;
         };
     }
-    
+
     //http://darcyclarke.me/development/detect-attribute-changes-with-jquery
     //http://jsfiddle.net/kodingsykosis/k3Q72/
     if (typeof $.fn.watch === 'undefined')
@@ -86,9 +86,9 @@
                     });
                 });
 
-                observer.observe(this, { 
-                    attributes: true, 
-                    attributeOldValue: true, 
+                observer.observe(this, {
+                    attributes: true,
+                    attributeOldValue: true,
                     subtree: false,
                     characterData: true,
                     attributeFilter: prop
@@ -96,7 +96,7 @@
             }
         });
     };
-    
+
     //FixMe: http://bugs.jqueryui.com/ticket/8932
     var orgHeight = $.fn.height;
     $.fn.height = function (height) {
@@ -110,11 +110,15 @@
 
         return orgHeight.call(this, height - paddingVert);
     };
-    
-    
+
+
     $.widget("kodingsykosis.tags", {
         options: {
-            delimiter: ','
+            delimiter: ',',
+            interactive: true,
+            tagColor: 'lightblue',
+            rounded: true,
+            removable: true
         },
 
         // Set up the widget
@@ -123,7 +127,7 @@
             this.wrap = $('<div>', {
                 'class': 'ui-tags-wrap'
             });
-            
+
             this.element
                 .addClass('ui-tags-source')
                 .hide();
@@ -132,7 +136,8 @@
             this.wrap
                 .css({
                     width: style.width,
-                    height: style.height,
+                    minHeight: style.height,
+                    height: 'auto',
                     float: style.float,
                     position: style.position,
                     top: style.top,
@@ -150,27 +155,100 @@
             this.wrap =
                 this.element
                     .parent();
-                    
-            var tags = 
-                (this.element
-                     .val() || '').split(this.options['delimiter'])
-                     
-            this.tags = $('<ul>', {
-                'class': 'ui-tags'
-            });
-        },
-        
-        _init: function () {
 
+            if (this.options['interactive'] === true) {
+                this.wrap
+                    .on('focus', $.proxy(this._onFocus, this));
+            }
+
+            var tags =
+                (this.element
+                     .val() || '').split(this.options['delimiter']);
+
+            this.tags = $('<ul>', {
+                'class': 'ui-tags',
+                'appendTo': this.wrap
+            });
+
+            this.add(tags);
         },
-        
+
         _destroy: function () {
-            
+            this.tags
+                .remove();
+
+            this.element
+                .show();
         },
-        
-        import: function(tags) {
-            
+
+        add: function(tags) {
+            if (!tags.splice) {
+                tags = [tags];
+            }
+
+            for(var i = 0, len = tags.length; i < len; i++) {
+                var tag = $('<li>', {
+                    'class': 'ui-tags-item',
+                    'text': tags[i],
+                    'appendTo': this.tags
+                });
+
+                tag.toggleClass('ui-tags-style-rounded', this.options['rounded'])
+                   .addClass('ui-tags-style-' + (this.options['tagColor'] || 'none'));
+
+                if (this.options['removable'] === true) {
+                    $('<a>', {
+                        'href': '#',
+                        'class': 'ui-icon ui-icon-close ui-tags-item-close',
+                        'appendTo': tag,
+                        'click': $.proxy(this._onTagRemove, this)
+                    });
+                }
+            }
+
+            this._updateValue();
+        },
+
+        replace: function(tags) {
+            this.tags
+                .emtpty();
+
+            this.add(tags);
+        },
+
+        _updateValue: function() {
+            var tags = new Array();
+
+            this.tags
+                .each(function() {
+                    tags.push(this.text);
+                });
+
+            this.element
+                .val(tags.join(this.options['delimiter']));
+        },
+
+        _onTagRemove: function(event) {
+            var tag = $(event.target).parent('.ui-tags-item');
+            event.preventDefault();
+
+            tag.remove();
+            this._updateValue();
+        },
+
+        _onTagEdit: function(event) {
+            var tag = $(event.target);
+            var tagText = tag.contents()
+                             .filter(function() { return this.nodeType ===3; })
+                             .first();
+
+            //TODO: Swap out the readonly tag with a styled input field
+        },
+
+        _onFocus: function(event) {
+            //TODO: add input field to the last position and set it's focus
+            //Ignore if event.target is a tag
         }
-		
+
     });
 })(jQuery);

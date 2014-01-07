@@ -118,7 +118,8 @@
             interactive: true,
             tagColor: 'lightblue',
             rounded: true,
-            removable: true
+            removable: true,
+            emptyText: 'Add Tags'
         },
 
         // Set up the widget
@@ -164,6 +165,16 @@
             var tags =
                 (this.element
                      .val() || '').split(this.options['delimiter']);
+
+            this.emptyText = $('<span>', {
+                'class': 'ui-tags-empty',
+                'css': { display: 'none' },
+                'text': this.options['emptyText']
+            });
+
+            if (typeof this.options['emptyText'] !== 'undefined') {
+                this.wrap.append(this.emptyText);
+            }
 
             this.tags = $('<ul>', {
                 'class': 'ui-tags',
@@ -220,12 +231,16 @@
             var tags = new Array();
 
             this.tags
+                .children('.ui-tags-item')
                 .each(function() {
                     tags.push(this.text);
                 });
 
             this.element
                 .val(tags.join(this.options['delimiter']));
+
+            this.emptyText
+                .toggle(tags.length === 0);
         },
 
         _onTagRemove: function(event) {
